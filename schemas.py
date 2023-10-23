@@ -38,7 +38,7 @@ class UserCreate(UserBase):
     middle_name: str
     last_name: str
     phone_number: str
-    password: str
+    hashed_password: str
 
 
 class User(UserBase):
@@ -57,7 +57,7 @@ class RoleBase(BaseModel):
 
 
 class RoleCreate(RoleBase):
-    role_type: str
+    role_type: int
     can_access_car_info: bool
     can_view_own_profile: bool
     can_view_driving_history: bool
@@ -70,7 +70,7 @@ class RoleCreate(RoleBase):
     can_edit_route_details: bool
     can_assign_vehicle_to_driver: bool
     can_assign_task_to_driver: bool
-    can_generate_reports: bool
+    can_generate_reports: bool 
 
 
 class Role(RoleCreate):

@@ -16,7 +16,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_user(db: Session, user: schemas.UserCreate):
-    fake_hash_pass = user.password + "hash"
+    fake_hash_pass = user.hashed_password + "hash"
     db_user = models.User(first_name=user.first_name,
                           username=user.username,
                           address=user.address,
@@ -76,6 +76,43 @@ def create_appointment_for_user(db: Session, appointment: schemas.AppointmentCre
     return db_appointment
 
 
+def create_role(db: Session, role: schemas.RoleCreate):
+    db_role = models.Role(role_type = role.role_type,
+                        can_access_car_info = role.can_access_car_info,
+                        can_view_own_profile = role.can_view_own_profile,
+                        can_view_driving_history = role.can_view_driving_history,
+                        can_manage_users = role.can_manage_users,
+                        can_view_fueling_info = role.can_view_fueling_info,
+                        can_update_maintenance_details = role.can_update_maintenance_details,
+                        can_search_by_license_plate = role.can_search_by_license_plate,
+                        can_create_auction_vehicles = role.can_create_auction_vehicles,
+                        can_view_auction_page = role.can_view_auction_page,
+                        can_edit_route_details = role.can_edit_route_details,
+                        can_assign_vehicle_to_driver = role.can_assign_vehicle_to_driver,
+                        can_assign_task_to_driver = role.can_assign_task_to_driver,
+                        can_generate_reports = role.can_generate_reports)
+    db.add(db_role)
+    db.commit()
+    db.refresh(db_role)
+    return db_role
 
-def create_roles():
+
+def assign_role_to_user(db: Session, user: schemas.UserCreate, role_type: int):
+    db_user = models.User(**user.model_dump(), role_type=role_type)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+
+def get_roles(db: Session, skip: int=0, limit: int=100):
+    return db.query(models.Role).offset(skip).limit(limit).all()
+
+
+def get_role_by_type(db: Session, role_type: int):
+    return db.query(models.Role).filter(models.Role.role_type == role_type).first()
+
+
+def create_roles(db: Session):
     pass

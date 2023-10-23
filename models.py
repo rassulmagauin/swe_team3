@@ -21,10 +21,10 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
     # registration_date, last_login, created_at, updated_at
-  #  role_type = Column(String, ForeignKey("roles.role_type"))  # TODO
+    role_type = Column(Integer, ForeignKey("roles.role_type"))  # TODO
 
     appointments = relationship("Appointment", back_populates="user")
-  #  role = relationship("Role", back_populates="users")
+    role = relationship("Role", back_populates="users")
     vehicles = relationship("Vehicle", back_populates="driver") 
 
 
@@ -52,26 +52,26 @@ class Vehicle(Base):
     driver = relationship("User", back_populates="vehicles")
 
 
-# class Role(Base): # no primary key?
-#     __tablename__ = "roles"
+class Role(Base): # no primary key?
+    __tablename__ = "roles"
     
-#     id = Column(Integer, primary_key=True, unique=True)
-#     role_type = Column(String, index=True)
-#     can_access_car_info = Column(Boolean)
-#     can_view_own_profile = Column(Boolean)
-#     can_view_driving_history = Column(Boolean)
-#     can_manage_users = Column(Boolean)
-#     can_view_fueling_info = Column(Boolean)
-#     can_update_maintenance_details = Column(Boolean)
-#     can_search_by_license_plate = Column(Boolean)
-#     can_create_auction_vehicles = Column(Boolean)
-#     can_view_auction_page = Column(Boolean)
-#     can_edit_route_details = Column(Boolean)
-#     can_assign_vehicle_to_driver = Column(Boolean)
-#     can_assign_task_to_driver = Column(Boolean)
-#     can_generate_reports = Column(Boolean)
+    id = Column(Integer, primary_key=True, unique=True)
+    role_type = Column(Integer, index=True, unique=True)
+    can_access_car_info = Column(Boolean)
+    can_view_own_profile = Column(Boolean)
+    can_view_driving_history = Column(Boolean)
+    can_manage_users = Column(Boolean)
+    can_view_fueling_info = Column(Boolean)
+    can_update_maintenance_details = Column(Boolean)
+    can_search_by_license_plate = Column(Boolean)
+    can_create_auction_vehicles = Column(Boolean)
+    can_view_auction_page = Column(Boolean)
+    can_edit_route_details = Column(Boolean)
+    can_assign_vehicle_to_driver = Column(Boolean)
+    can_assign_task_to_driver = Column(Boolean)
+    can_generate_reports = Column(Boolean)
 
-#     users = relationship("User", back_populates="role")
+    users = relationship("User", back_populates="role")
 
 
 class Appointment(Base):

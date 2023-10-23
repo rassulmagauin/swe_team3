@@ -69,3 +69,24 @@ def get_appointments(skip: int = 0, limit: int = 100, db: Session = Depends(get_
 def get_services(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     services = crud.get_services(db, skip=skip, limit=limit)
     return services
+
+
+@app.post("/roles/", response_model=schemas.Role)
+def create_role(role: schemas.RoleCreate, db: Session = Depends(get_db)):
+    db_role = crud.get_role_by_type(db, role_type=role.role_type)
+    if db_role:
+        raise HTTPException(status_code=400, detail="Role already exists")
+    return crud.create_role(db=db, role=role)
+
+
+@app.get("/roles/", response_model=list[schemas.Role])
+def get_roles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    roles = crud.get_roles(db, skip=skip, limit=limit)
+    return roles
+
+
+@app.post("/role/{role_type}/user/", response_model=schemas.User)
+def add_role_to_user(
+    role_type: int, user: schemas.UserCreate, db: Session = Depends(get_db)):
+    return crud.assign_role_to_user(db=db, user=user, role_type=role_type)
+
