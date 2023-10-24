@@ -24,7 +24,8 @@ def create_user(db: Session, user: schemas.UserCreate):
                           email=user.email, 
                           hashed_password=fake_hash_pass,
                           middle_name=user.middle_name,
-                          phone_number=user.phone_number)
+                          phone_number=user.phone_number,
+                          last_name=user.last_name)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -43,6 +44,28 @@ def update_user(db: Session, user_id: int, user: schemas.UserUpdate):
         return db_user
     return None  # No User was found
 
+
+def delete_user(db: Session, user_id: int):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    
+    if db_user:
+        db.delete(db_user)
+        db.commit()
+        # return {"message": f"Service {db_user} has been deleted"}
+        return db_user
+    return None  # No service was found
+
+
+def get_vehicle_by_plate(db: Session, license_plate: str):
+    return db.query(models.Vehicle).filter(models.Vehicle.license_plate == license_plate).first()
+
+
+def create_vehicle(db: Session, vehicle: schemas.VehicleCreate):
+    db_vehicle = models.Vehicle(**vehicle.model_dump())
+    db.add(db_vehicle)
+    db.commit()
+    db.refresh(db_vehicle)
+    return db_vehicle
 
 
 def get_vehicles(db: Session, skip: int=0, limit: int=100):

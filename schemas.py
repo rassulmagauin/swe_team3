@@ -18,7 +18,7 @@ class VehicleCreate(VehicleBase):
 
 class Vehicle(VehicleBase):
     id: int
-    driver_id: int
+    driver_id: int | None = None
     type: str
     
 

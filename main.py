@@ -49,20 +49,44 @@ def update_user_by_id(user: schemas.UserUpdate, user_id: int, db: Session = Depe
 
 
 # DELETE for users
+@app.delete("/users/{user_id}/delete", response_model=schemas.User)
+def delete_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    return crud.delete_user(user_id=user_id, db=db)
 
 
+# CREATE vehicle
+@app.post("/vehicles/", response_model=schemas.Vehicle)
+def create_vehicle(vehicle: schemas.VehicleCreate, db: Session = Depends(get_db)):
+    db_vehicle = crud.get_vehicle_by_plate(db, license_plate=vehicle.license_plate)
+    if db_vehicle:
+        raise HTTPException(status_code=400, detail="License plate already registered")
+    return crud.create_vehicle(db=db, vehicle=vehicle)
+
+
+# CREATE vehicle for user by id
 @app.post("/users/{user_id}/vehicles/", response_model=schemas.Vehicle)
 def add_vehicles_for_user(
     user_id: int, vehicle: schemas.VehicleCreate, db: Session = Depends(get_db)):
     return crud.add_vehicle_for_user(db=db, vehicle=vehicle, user_id=user_id)
 
 
+# READ for vehicles
 @app.get("/vehicles/", response_model=list[schemas.Vehicle])
 def get_vehicles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     vehicles = crud.get_vehicles(db, skip=skip, limit=limit)
     return vehicles
 
 
+# READ for vehicles by id
+
+
+# UPDATE for vehicles by id
+
+
+# DELETE for vehicles by id
+
+
+# CREATE appointment for user by id
 @app.post("/users/{user_id}/appointment/", response_model=schemas.Appointment)
 def create_appointment_for_user(
     user_id: int, appointment: schemas.AppointmentCreate,
@@ -70,29 +94,43 @@ def create_appointment_for_user(
     return crud.create_appointment_for_user(db=db, appointment=appointment, user_id=user_id, service=service)
 
 
+# READ for appointments
 @app.get("/appointments/", response_model=list[schemas.Appointment])
 def get_appointments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     appointments = crud.get_appointments(db, skip=skip, limit=limit)
     return appointments
 
 
-@app.get("/services/", response_model=list[schemas.Service])
-def get_services(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    services = crud.get_services(db, skip=skip, limit=limit)
-    return services
+# UPDATE for appointments
 
 
+# DELETE for appointments
+
+
+# CREATE for service
 @app.post("/service/", response_model=schemas.Service)
 def create_service(service: schemas.ServiceCreate, db: Session = Depends(get_db)):
     db_service = crud.create_service(db, service=service)
     return db_service
 
 
+# READ for services
+@app.get("/services/", response_model=list[schemas.Service])
+def get_services(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    services = crud.get_services(db, skip=skip, limit=limit)
+    return services
+
+
+# UPDATE for services
 @app.put("/services/{service_id}/update", response_model=schemas.Service)
 def update_service_by_id(service: schemas.ServiceCreate, service_id: int, db: Session = Depends(get_db)):
     return crud.update_service(service_id=service_id, updated_service=service, db=db)
 
 
+# DELETE for services
+
+
+# CREATE for roles
 @app.post("/roles/", response_model=schemas.Role)
 def create_role(role: schemas.RoleCreate, db: Session = Depends(get_db)):
     db_role = crud.get_role_by_type(db, role_type=role.role_type)
@@ -101,14 +139,25 @@ def create_role(role: schemas.RoleCreate, db: Session = Depends(get_db)):
     return crud.create_role(db=db, role=role)
 
 
+# READ fore roles
 @app.get("/roles/", response_model=list[schemas.Role])
 def get_roles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     roles = crud.get_roles(db, skip=skip, limit=limit)
     return roles
 
 
+# CREATE for role with user 
 @app.post("/role/{role_type}/user/", response_model=schemas.User)
 def add_role_to_user(
     role_type: int, user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.assign_role_to_user(db=db, user=user, role_type=role_type)
+
+
+# UPDATE for roles
+
+
+# DELETE for roles
+
+
+# DELETE for roles
 
