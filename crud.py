@@ -31,6 +31,20 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
+def update_user(db: Session, user_id: int, user: schemas.UserUpdate):
+    db_user = db.query(models.User).filter(models.User.id == user_id).first()
+    
+    if db_user:
+        for key, value in user.model_dump().items():
+            setattr(db_user, key, value)
+        
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    return None  # No User was found
+
+
+
 def get_vehicles(db: Session, skip: int=0, limit: int=100):
     return db.query(models.Vehicle).offset(skip).limit(limit).all()
 
@@ -59,6 +73,32 @@ def create_service(db: Session, service: schemas.ServiceCreate):
     db.commit()
     db.refresh(db_service)
     return db_service
+
+
+# update 
+def update_service(db: Session, service_id: int, updated_service: schemas.Service):
+    db_service = db.query(models.Service).filter(models.Service.id == service_id).first()
+    
+    if db_service:
+        for key, value in updated_service.model_dump().items():
+            setattr(db_service, key, value)
+        
+        db.commit()
+        db.refresh(db_service)
+        return db_service
+    return None  # No service was found
+
+
+# DELETE
+def delete_service(db: Session, service_id: int):
+    db_service = db.query(models.Service).filter(models.Service.id == service_id).first()
+    
+    if db_service:
+        db.delete(db_service)
+        db.commit()
+        return {"message": f"Service {service_id} has been deleted"}
+    return None  # No service was found
+
 
 
 def create_appointment_for_user(db: Session, appointment: schemas.AppointmentCreate, 

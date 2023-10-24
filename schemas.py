@@ -41,10 +41,14 @@ class UserCreate(UserBase):
     hashed_password: str
 
 
-class User(UserBase):
-    id: int
+class UserUpdate(UserCreate):
+    is_active: bool
     is_active: bool
     driving_license_code: str | None = None
+
+
+class User(UserUpdate):
+    id: int
     vehicles: list[Vehicle] = []
 
     class Config:
